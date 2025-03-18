@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Security.Claims;
+using LU1_1._3.Repositories;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +36,10 @@ builder.Services.AddIdentityApiEndpoints<IdentityUser>(options =>
     {
         options.ConnectionString = connStr;
     });
+
+builder.Services.AddScoped<AppointmentRepository>(provider =>
+    new AppointmentRepository(connStr));
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
