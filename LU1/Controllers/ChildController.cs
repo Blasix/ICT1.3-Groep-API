@@ -43,6 +43,13 @@ namespace LU1.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             child.UserId = Guid.Parse(userId);
             
+            var currentChild = (await repository.GetByUserId(userId)).FirstOrDefault(c => c.Id == Guid.Parse(id));
+
+            if (currentChild == null)
+            {
+                return NotFound();
+            }
+            
             await repository.Update(child);
             return Ok();
         }
@@ -51,6 +58,14 @@ namespace LU1.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var child = (await repository.GetByUserId(userId)).FirstOrDefault(c => c.Id == Guid.Parse(id));
+
+            if (child == null)
+            {
+                return NotFound();
+            }
+            
             await repository.Delete(id);
             return Ok();
         }
