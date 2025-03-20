@@ -11,7 +11,7 @@ public class ChildRepository(string connectionString)
     {
         using (IDbConnection db = new SqlConnection(connectionString))
         {
-            return await db.QueryAsync<Child>("SELECT CAST(Id AS UNIQUEIDENTIFIER) AS Id, CAST(UserId AS UNIQUEIDENTIFIER) AS UserId, TrajectName, ArtsName, Name, PrefabId FROM Child WHERE UserId = @UserId", new { UserId = userId });
+            return await db.QueryAsync<Child>("SELECT CAST(Id AS UNIQUEIDENTIFIER) AS Id, CAST(UserId AS UNIQUEIDENTIFIER) AS UserId,  CAST(TrajectId AS UNIQUEIDENTIFIER) as TrajectId, ArtsName, Name, PrefabId FROM Child WHERE UserId = @UserId", new { UserId = userId });
         }
     }
     
@@ -19,7 +19,7 @@ public class ChildRepository(string connectionString)
     {
         using (IDbConnection db = new SqlConnection(connectionString))
         {
-            var sql = "INSERT INTO Child (Id, UserId, TrajectName, ArtsName, Name, PrefabId) VALUES (@Id, @UserId, @TrajectName, @ArtsName, @Name, @PrefabId)";
+            var sql = "INSERT INTO Child (Id, UserId, TrajectId, ArtsName, Name, PrefabId) VALUES (@Id, @UserId, @TrajectId, @ArtsName, @Name, @PrefabId)";
             await db.ExecuteAsync(sql, child);
         }
     }
@@ -28,7 +28,7 @@ public class ChildRepository(string connectionString)
     {
         using (IDbConnection db = new SqlConnection(connectionString))
         {
-            var sql = "UPDATE Child SET UserId = @UserId, TrajectName = @TrajectName, ArtsName = @ArtsName, Name = @Name, PrefabId = @PrefabId WHERE Id = @Id";
+            var sql = "UPDATE Child SET UserId = @UserId, TrajectId = @TrajectId, ArtsName = @ArtsName, Name = @Name, PrefabId = @PrefabId WHERE Id = @Id";
             await db.ExecuteAsync(sql, child);
         }
     }
