@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Security.Claims;
+using LU1.Repositories;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +42,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddLogging();
 
 var sqlConnectionStringFound = !string.IsNullOrWhiteSpace(connStr);
+
+builder.Services.AddScoped<ChildRepository>(provider => new ChildRepository(connStr));
+
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
