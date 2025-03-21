@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Security.Claims;
+using LU1.Repositories;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthorization();
 
 builder.Configuration.AddUserSecrets<Program>();
+
 
 builder.Services.AddAuthorization(options =>
 {
@@ -39,6 +41,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddLogging();
+builder.Services.AddScoped<LevelsRepository>(provider => new LevelsRepository(connStr));
+
 
 var sqlConnectionStringFound = !string.IsNullOrWhiteSpace(connStr);
 var app = builder.Build();
