@@ -21,25 +21,30 @@ namespace LU1.Controllers
 
         // POST: /appointments
         [HttpPost]
-        public async Task<ActionResult<AppointmentItem>> Create([FromBody] AppointmentItem appointment)
+        public async Task<IActionResult> PostAppointment(AppointmentItem appointment)
         {
-            appointment.Id = Guid.NewGuid().ToString();
-
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
             await repository.Add(appointment);
             return Ok();
         }
 
         // DELETE: /appointments/{Appointment Name}
         [HttpDelete("/{childName}/{appointmentName}")]
-        public async Task<IActionResult> Delete(string appointmentName, string childName)
+        public async Task<IActionResult> Delete(string childName, string appointmentName)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var appointment = (await repository.GetAppointmentIdByUserIdChildNameAndAppointmentName(userId, childName, appointmentName));
 
-            await repository.Delete(userId, childName, appointment.Id);
+            await repository.Delete(userId, childName, appointment.id);
             return Ok();
+        }
+
+        [HttpGet("validation/{childName}/{appointmentName}")]
+        public async Task<ActionResult<bool>> ValidateAppointmentName(string childName, string appointmentName)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var appointment = (await repository.GetAppointmentIdByUserIdChildNameAndAppointmentName(userId, childName, appointmentName));
+            return appointment != null;
         }
     }
 }

@@ -2,6 +2,7 @@
 using Dapper;
 using LU1.Models;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Hosting;
 
 namespace LU1.Repositories
 {
@@ -37,7 +38,7 @@ namespace LU1.Repositories
                     {
                         return null;
                     }
-                    var getAppointmentQuery = "SELECT * FROM Appointment WHERE childId = @ChildId";
+                    var getAppointmentQuery = "SELECT id, name AS appointmentName, date, childId, levelId, statusLevel, LevelStep FROM Appointment WHERE childId = @ChildId";
                     var result = await connection.QueryAsync<AppointmentItem>(getAppointmentQuery, new { ChildId = resultChild });
                     return result;
                 }
@@ -79,8 +80,20 @@ namespace LU1.Repositories
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                var query = "INSERT INTO Appointment (id, name, date, childId, levelId, statusLevel, LevelStep) VALUES (@Id, @AppointmentName, @AppointmentDate, @ChildId, @LevelId, @StatusLevel, @LevelStep)";
-                await connection.ExecuteAsync(query, appointment);
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "INSERT INTO Appointment (id, name, date, childId, levelId, statusLevel, LevelStep) VALUES (@Id, @Name, @Date, @ChildId, @LevelId, @StatusLevel, @LevelStep)";
+                    command.Parameters.AddWithValue("@Id", appointment.id);
+                    command.Parameters.AddWithValue("@Name", appointment.appointmentName);
+                    command.Parameters.AddWithValue("@Date", appointment.date);
+                    command.Parameters.AddWithValue("@ChildId", appointment.childId);
+                    command.Parameters.AddWithValue("@LevelId", appointment.levelId);
+                    command.Parameters.AddWithValue("@StatusLevel", appointment.statusLevel);
+                    command.Parameters.AddWithValue("@LevelStep", appointment.LevelStep);
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+
             }
         }
 
