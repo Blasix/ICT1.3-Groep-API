@@ -10,6 +10,6 @@
         public string ChildId { get; set; }
         public string LevelId { get; set; }
         public string StatusLevel { get; set; }
-        public string LevelStep { get; set; }
+        public int LevelStep { get; set; }
     }
 }

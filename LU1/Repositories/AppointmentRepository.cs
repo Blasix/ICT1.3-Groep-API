@@ -7,52 +7,96 @@ namespace LU1.Repositories
 {
     public class AppointmentRepository(string _connectionString)
     {
-        string ReturnedChildId;
-        public async Task<IEnumerable<AppointmentItem>> GetByUserIdAndChildName(string userId, string childName)
+        public async Task<string> GetChildByUserIdAndChildName(string userId, string childName)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    var returnChildQuery = "SELECT id FROM Child WHERE userId = @UserId AND name = @Name";
+                    var resultChild = await connection.QueryFirstOrDefaultAsync<string>(returnChildQuery, new { UserId = userId, Name = childName });
+                    return resultChild;
+                }
+                catch (NullReferenceException)
+                {
+                    return null;
+                }
+            }
+        }
+
+        public async Task<IEnumerable<AppointmentItem>> GetAppointmentsByUserIdAndChildName(string userId, string childName)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
                 try
                 {
-                    ReturnedChildId = "SELECT id FROM Child WHERE userId = @UserId AND WHERE name = @Name";
+                    var returnChildQuery = "SELECT id FROM Child WHERE userId = @UserId AND name = @Name";
+                    var resultChild = await connection.QueryFirstOrDefaultAsync<string>(returnChildQuery, new { UserId = userId, Name = childName });
+                    if (resultChild == null)
+                    {
+                        return null;
+                    }
+                    var getAppointmentQuery = "SELECT * FROM Appointment WHERE childId = @ChildId";
+                    var result = await connection.QueryAsync<AppointmentItem>(getAppointmentQuery, new { ChildId = resultChild });
+                    return result;
                 }
                 catch (NullReferenceException)
                 {
                     return null;
                 }
-
-                var query = "SELECT * FROM Appointments WHERE childId = @ChildId";
-                var result = await connection.QueryAsync<AppointmentItem>(query, new {ChildId = ReturnedChildId });
-                return result;
-
             }
         }
+
+        public async Task<AppointmentItem> GetAppointmentIdByUserIdChildNameAndAppointmentName(string userId, string childName, string appointmentName)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                try
+                {
+                    var returnChildQuery = "SELECT id FROM Child WHERE userId = @UserId AND name = @Name";
+                    var resultChild = await connection.QueryFirstOrDefaultAsync<string>(returnChildQuery, new { UserId = userId, Name = childName });
+
+                    if (resultChild == null)
+                    {
+                        return null;
+                    }
+
+                    var getAppointmentQuery = "SELECT * FROM Appointment WHERE childId = @ChildId AND name = @AppointmentName";
+                    var result = await connection.QueryFirstOrDefaultAsync<AppointmentItem>(getAppointmentQuery, new { ChildId = resultChild, AppointmentName = appointmentName });
+                    return result;
+                }
+                catch (NullReferenceException)
+                {
+                    return null;
+                }
+            }
+        }
+
         public async Task Add(AppointmentItem appointment)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                var query = "INSERT INTO Appointments (Id, UserId, TrajectId, ArtsName, Name, PrefabId) VALUES (@Id, @UserId, @TrajectId, @ArtsName, @Name, @PrefabId)";
+                var query = "INSERT INTO Appointment (id, name, date, childId, levelId, statusLevel, LevelStep) VALUES (@Id, @AppointmentName, @AppointmentDate, @ChildId, @LevelId, @StatusLevel, @LevelStep)";
                 await connection.ExecuteAsync(query, appointment);
             }
         }
-        public async Task Update(AppointmentItem appointment)
+
+        public async Task Delete(string UserId, string childName, string AppointmentId)
         {
-            using (var connection = new SqlConnection(_connectionString))
+            string childId = await GetChildByUserIdAndChildName(UserId, childName);
+            if (childId != null)
             {
-                await connection.OpenAsync();
-                var query = "UPDATE Appointments SET UserId = @UserId, TrajectId = @TrajectId, ArtsName = @ArtsName, Name = @Name, PrefabId = @PrefabId WHERE Id = @Id";
-                await connection.ExecuteAsync(query, appointment);
+                return;
             }
-        }
-        public async Task Delete(string id)
-        {
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                var query = "DELETE FROM Appointments WHERE Id = @Id";
-                await connection.ExecuteAsync(query, new { Id = id });
+                var query = "DELETE FROM Appointments WHERE childId = @ChildId AND id = @AppointmentId";
+                await connection.ExecuteAsync(query, new { ChildId = childId, AppointmentId = AppointmentId });
             }
         }
     }
