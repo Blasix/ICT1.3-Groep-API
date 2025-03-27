@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Dapper;
 using LU1.Models;
 using Microsoft.Data.SqlClient;
@@ -85,7 +86,7 @@ namespace LU1.Repositories
                     command.CommandText = "INSERT INTO Appointment (id, name, date, childId, levelId, statusLevel, LevelStep) VALUES (@Id, @Name, @Date, @ChildId, @LevelId, @StatusLevel, @LevelStep)";
                     command.Parameters.AddWithValue("@Id", appointment.id);
                     command.Parameters.AddWithValue("@Name", appointment.appointmentName);
-                    command.Parameters.AddWithValue("@Date", appointment.date);
+                    command.Parameters.AddWithValue("@Date", DateTime.Parse(appointment.date));
                     command.Parameters.AddWithValue("@ChildId", appointment.childId);
                     command.Parameters.AddWithValue("@LevelId", appointment.levelId);
                     command.Parameters.AddWithValue("@StatusLevel", appointment.statusLevel);
@@ -93,22 +94,18 @@ namespace LU1.Repositories
                     command.ExecuteNonQuery();
                 }
                 connection.Close();
-
             }
         }
 
         public async Task Delete(string UserId, string childName, string AppointmentId)
         {
             string childId = await GetChildByUserIdAndChildName(UserId, childName);
-            if (childId != null)
-            {
-                return;
-            }
+            string childIdTest = childId;
 
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                var query = "DELETE FROM Appointments WHERE childId = @ChildId AND id = @AppointmentId";
+                var query = "DELETE FROM Appointment WHERE childId = @ChildId AND id = @AppointmentId";
                 await connection.ExecuteAsync(query, new { ChildId = childId, AppointmentId = AppointmentId });
             }
         }

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LU1.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("/appointments")]
     public class AppointmentController(AppointmentRepository repository, ILogger<AppointmentController> logger) : ControllerBase
     {
@@ -29,7 +29,7 @@ namespace LU1.Controllers
         }
 
         // DELETE: /appointments/{Appointment Name}
-        [HttpDelete("/{childName}/{appointmentName}")]
+        [HttpDelete("{childName}/{appointmentName}")]
         public async Task<IActionResult> Delete(string childName, string appointmentName)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
