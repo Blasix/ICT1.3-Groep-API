@@ -74,7 +74,7 @@ public class NoteController(NoteRepository noteRepository, ChildRepository child
             return NotFound();
         }
 
-        await noteRepository.Update(note);
+        await noteRepository.Delete(id);
         return Ok();
     }
 }
