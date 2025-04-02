@@ -26,6 +26,7 @@ public class NoteController(NoteRepository noteRepository, ChildRepository child
     public async Task<ActionResult<Note>> Create([FromBody] Note note)
     {
         note.Id = Guid.NewGuid();
+        note.Date = DateTime.Now;
                 
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var children = await childRepository.GetByUserId(userId);
@@ -43,6 +44,7 @@ public class NoteController(NoteRepository noteRepository, ChildRepository child
     public async Task<IActionResult> Update(string id, [FromBody] Note note)
     {
         note.Id = Guid.Parse(id);
+        note.Date = DateTime.Now;
         
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
