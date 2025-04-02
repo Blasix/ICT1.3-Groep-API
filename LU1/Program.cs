@@ -48,6 +48,7 @@ var sqlConnectionStringFound = !string.IsNullOrWhiteSpace(connStr);
 
 builder.Services.AddScoped<ChildRepository>(provider => new ChildRepository(connStr));
 builder.Services.AddScoped<NoteRepository>(provider => new NoteRepository(connStr));
+builder.Services.AddScoped<TrajectRepository>(provider => new TrajectRepository(connStr));
 builder.Services.AddScoped<AppointmentRepository>(provider =>
     new AppointmentRepository(connStr));
 
