@@ -9,6 +9,7 @@ builder.Services.AddAuthorization();
 
 builder.Configuration.AddUserSecrets<Program>();
 
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("UserOwnsResource", policy =>
@@ -40,6 +41,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddLogging();
+builder.Services.AddScoped<LevelsRepository>(provider => new LevelsRepository(connStr));
+
 
 var sqlConnectionStringFound = !string.IsNullOrWhiteSpace(connStr);
 
