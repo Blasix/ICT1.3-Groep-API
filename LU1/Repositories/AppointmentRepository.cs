@@ -89,13 +89,46 @@ namespace LU1.Repositories
                     command.Parameters.AddWithValue("@Date", DateTime.Parse(appointment.date));
                     command.Parameters.AddWithValue("@ChildId", appointment.childId);
                     command.Parameters.AddWithValue("@LevelId", appointment.levelId);
-                    command.Parameters.AddWithValue("@StatusLevel", appointment.statusLevel);
+                    command.Parameters.AddWithValue("@StatusLevel", "incompleted");
                     command.Parameters.AddWithValue("@LevelStep", appointment.LevelStep);
                     command.ExecuteNonQuery();
                 }
                 connection.Close();
             }
         }
+
+        public async Task Put(string statusLevel, int step, string childId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = @"
+                UPDATE Appointment 
+                SET statusLevel = @statusLevel
+                WHERE ChildId = @ChildId AND LevelStep = @LevelStep";
+                   
+                    if(statusLevel == "completed")
+                    {
+                    command.Parameters.AddWithValue("@statusLevel", "completed");
+                    }
+                    else
+                    {
+                        command.Parameters.AddWithValue("@statusLevel", "doing");
+                    }
+
+
+                    command.Parameters.AddWithValue("@ChildId", childId);
+                    command.Parameters.AddWithValue("@LevelStep", step);
+
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
+
 
         public async Task Delete(string UserId, string childName, string AppointmentId)
         {

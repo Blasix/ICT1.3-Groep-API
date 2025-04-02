@@ -46,5 +46,14 @@ namespace LU1.Controllers
             var appointment = (await repository.GetAppointmentIdByUserIdChildNameAndAppointmentName(userId, childName, appointmentName));
             return appointment != null;
         }
+
+        [HttpPut("{statusLevel}/{step}/{childId}")]
+        public async Task<IActionResult> AppointmentUpdated(string statusLevel, int step, string childId)
+        {
+            await repository.Put(statusLevel, step, childId);
+
+            return Ok(new { Message = "Appointment updated successfully" });
+        }
+
     }
 }
