@@ -11,13 +11,19 @@ namespace LU1.Controllers;
 [Route("/[controller]")]
 public class NoteController(NoteRepository noteRepository, ChildRepository childRepository) : ControllerBase
 {
-    // GET: /Note
-    [HttpGet]
-    public async Task<ActionResult<Note>> GetAll()
+    // GET: /Note/{childId}
+    [HttpGet("{childId}")]
+    public async Task<ActionResult<Note>> GetAll(string childId)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                
-        var objects = await noteRepository.GetByUserId(userId);
+        
+        var children = await childRepository.GetByUserId(userId);
+        if (children.FirstOrDefault(c => c.Id == Guid.Parse(childId)) == null)
+        {
+            return BadRequest("Child not found");
+        }
+        
+        var objects = await noteRepository.GetByChildId(childId);
         return Ok(objects);
     }
     
@@ -48,7 +54,9 @@ public class NoteController(NoteRepository noteRepository, ChildRepository child
         
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
-        var currentNote = (await noteRepository.GetByUserId(userId)).FirstOrDefault(c => c.Id == Guid.Parse(id));
+        var currentNote =
+            (await noteRepository.GetByChildId(note.ChildId.ToString()))
+            .FirstOrDefault(c => c.Id == Guid.Parse(id));
         if (currentNote == null)
         {
             return NotFound();
@@ -69,13 +77,13 @@ public class NoteController(NoteRepository noteRepository, ChildRepository child
     public async Task<IActionResult> Delete(string id)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        var currentNote = (await noteRepository.GetByUserId(userId)).FirstOrDefault(c => c.Id == Guid.Parse(id));
-        if (currentNote == null)
+        
+        var children = await childRepository.GetByUserId(userId);
+        if (children.FirstOrDefault(c => c.Id == Guid.Parse(id)) == null)
         {
-            return NotFound();
+            return BadRequest("Child not found");
         }
-
+        
         await noteRepository.Delete(id);
         return Ok();
     }

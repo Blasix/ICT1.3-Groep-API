@@ -7,11 +7,11 @@ namespace LU1.Repositories;
 
 public class NoteRepository(string connectionString)
 {
-    public async Task<IEnumerable<Note>> GetByUserId(string userId)
+    public async Task<IEnumerable<Note>> GetByChildId(string childId)
     {
         using (IDbConnection db = new SqlConnection(connectionString))
         {
-            return await db.QueryAsync<Note>("SELECT CAST(Id AS UNIQUEIDENTIFIER) AS Id, CAST(UserId AS UNIQUEIDENTIFIER) AS UserId, Date, Title, Content FROM Note WHERE UserId = @UserId", new { UserId = userId });
+            return await db.QueryAsync<Note>("SELECT CAST(Id AS UNIQUEIDENTIFIER) AS Id, CAST(ChildId AS UNIQUEIDENTIFIER) AS ChildId, Date, Title, Content FROM Note WHERE ChildId = @ChildId", new { ChildId = childId });
         }
     }
     
@@ -19,7 +19,7 @@ public class NoteRepository(string connectionString)
     {
         using (IDbConnection db = new SqlConnection(connectionString))
         {
-            var sql = "INSERT INTO Note (Id, UserId, Date, Title, Content) VALUES (@Id, @UserId, @Date, @Title, @Content)";
+            var sql = "INSERT INTO Note (Id, ChildId, Date, Title, Content) VALUES (@Id, @ChildId, @Date, @Title, @Content)";
             await db.ExecuteAsync(sql, note);
         }
     }
@@ -28,7 +28,7 @@ public class NoteRepository(string connectionString)
     {
         using (IDbConnection db = new SqlConnection(connectionString))
         {
-            var sql = "UPDATE Note SET UserId = @UserId, Date = @Date, Title = @Title, Content = @Content WHERE Id = @Id";
+            var sql = "UPDATE Note SET ChildId = @ChildId, Date = @Date, Title = @Title, Content = @Content WHERE Id = @Id";
             await db.ExecuteAsync(sql, note);
         }
     }
