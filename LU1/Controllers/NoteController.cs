@@ -76,14 +76,6 @@ public class NoteController(NoteRepository noteRepository, ChildRepository child
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        
-        var children = await childRepository.GetByUserId(userId);
-        if (children.FirstOrDefault(c => c.Id == Guid.Parse(id)) == null)
-        {
-            return BadRequest("Child not found");
-        }
-        
         await noteRepository.Delete(id);
         return Ok();
     }
