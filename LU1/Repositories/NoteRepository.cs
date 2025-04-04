@@ -11,7 +11,7 @@ public class NoteRepository(string connectionString)
     {
         using (IDbConnection db = new SqlConnection(connectionString))
         {
-            return await db.QueryAsync<Note>("SELECT CAST(Id AS UNIQUEIDENTIFIER) AS Id, CAST(ChildId AS UNIQUEIDENTIFIER) AS ChildId, Date, Title, Content FROM Note WHERE ChildId = @ChildId", new { ChildId = childId });
+            return await db.QueryAsync<Note>("SELECT CAST(Id AS UNIQUEIDENTIFIER) AS Id, CAST(ChildId AS UNIQUEIDENTIFIER) AS ChildId, NoteDate, Title, Content FROM Note WHERE ChildId = @ChildId", new { ChildId = childId });
         }
     }
     
@@ -19,7 +19,7 @@ public class NoteRepository(string connectionString)
     {
         using (IDbConnection db = new SqlConnection(connectionString))
         {
-            var sql = "INSERT INTO Note (Id, ChildId, Date, Title, Content) VALUES (@Id, @ChildId, @Date, @Title, @Content)";
+            var sql = "INSERT INTO Note (Id, ChildId, NoteDate, Title, Content) VALUES (@Id, @ChildId, @Date, @Title, @Content)";
             await db.ExecuteAsync(sql, note);
         }
     }
