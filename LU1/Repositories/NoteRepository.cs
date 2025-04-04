@@ -19,7 +19,7 @@ public class NoteRepository(string connectionString)
     {
         using (IDbConnection db = new SqlConnection(connectionString))
         {
-            var sql = "INSERT INTO Note (Id, ChildId, NoteDate, Title, Content) VALUES (@Id, @ChildId, @Date, @Title, @Content)";
+            var sql = "INSERT INTO Note (Id, ChildId, NoteDate, Title, Content) VALUES (@Id, @ChildId, @NoteDate, @Title, @Content)";
             await db.ExecuteAsync(sql, note);
         }
     }
@@ -28,7 +28,7 @@ public class NoteRepository(string connectionString)
     {
         using (IDbConnection db = new SqlConnection(connectionString))
         {
-            var sql = "UPDATE Note SET ChildId = @ChildId, Date = @Date, Title = @Title, Content = @Content WHERE Id = @Id";
+            var sql = "UPDATE Note SET ChildId = @ChildId, NoteDate = @NoteDate, Title = @Title, Content = @Content WHERE Id = @Id";
             await db.ExecuteAsync(sql, note);
         }
     }
