@@ -9,7 +9,7 @@ namespace LU1.Controllers;
 [ApiController]
 [Authorize]
 [Route("/[controller]")]
-public class NoteController(INoteRepository noteRepository, ChildRepository childRepository) : ControllerBase
+public class NoteController(INoteRepository noteRepository, IChildRepository childRepository) : ControllerBase
 {
     // GET: /Note/{childId}
     [HttpGet("{childId}")]

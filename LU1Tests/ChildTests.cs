@@ -13,7 +13,6 @@ public class ChildTests
     Mock<IChildRepository> _childRepositoryMock;
     private ChildController _childController;
     Guid _userId;
-    
   
     [SetUp]
     public void Setup()
