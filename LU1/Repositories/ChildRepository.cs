@@ -5,7 +5,15 @@ using Microsoft.Data.SqlClient;
 
 namespace LU1.Repositories;
 
-public class ChildRepository(string connectionString)
+public interface IChildRepository
+{
+    Task<IEnumerable<Child>> GetByUserId(string userId);
+    Task Add(Child child);
+    Task Update(Child child);
+    Task Delete(string id);
+}
+
+public class ChildRepository(string connectionString) : IChildRepository
 {
     public async Task<IEnumerable<Child>> GetByUserId(string userId)
     {
