@@ -7,7 +7,16 @@ using Microsoft.Extensions.Hosting;
 
 namespace LU1.Repositories
 {
-    public class AppointmentRepository(string _connectionString)
+    
+    public interface IAppointmentRepository
+    {
+        Task<IEnumerable<AppointmentItem>> GetAppointmentsByUserIdAndChildName(string userId, string childName);
+        Task<AppointmentItem> GetAppointmentIdByUserIdChildNameAndAppointmentName(string userId, string childName, string appointmentName);
+        Task Add(AppointmentItem appointment);
+        Task Delete(string UserId, string childName, string AppointmentId);
+    }
+        
+    public class AppointmentRepository(string _connectionString) : IAppointmentRepository
     {
         public async Task<string> GetChildByUserIdAndChildName(string userId, string childName)
         {

@@ -9,7 +9,7 @@ namespace LU1.Controllers
     [ApiController]
     [Authorize]
     [Route("/appointments")]
-    public class AppointmentController(AppointmentRepository repository, ILogger<AppointmentController> logger) : ControllerBase
+    public class AppointmentController(IAppointmentRepository repository, ILogger<AppointmentController> logger) : ControllerBase
     {
         [HttpGet("{childName}")]
         public async Task<ActionResult<AppointmentItem>> GetAll(string childName)

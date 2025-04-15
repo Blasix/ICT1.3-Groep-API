@@ -5,7 +5,15 @@ using Microsoft.Data.SqlClient;
 
 namespace LU1.Repositories;
 
-public class NoteRepository(string connectionString)
+public interface INoteRepository
+{
+    Task<IEnumerable<Note>> GetByChildId(string childId);
+    Task Add(Note note);
+    Task Update(Note note);
+    Task Delete(string id);
+}
+
+public class NoteRepository(string connectionString) : INoteRepository
 {
     public async Task<IEnumerable<Note>> GetByChildId(string childId)
     {

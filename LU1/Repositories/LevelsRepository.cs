@@ -5,7 +5,11 @@ using Microsoft.Data.SqlClient;
 
 namespace LU1.Repositories
 {
-    public class LevelsRepository(string connectionString)
+    public interface ILevelsRepository
+    {
+        Task<IEnumerable<Level>> GetLevelsByStepAndTrajectId(int step, string trajectId);
+    }
+    public class LevelsRepository(string connectionString) : ILevelsRepository
     {
         public async Task<IEnumerable<Level>> GetLevelsByStepAndTrajectId(int step, string trajectId)
         {

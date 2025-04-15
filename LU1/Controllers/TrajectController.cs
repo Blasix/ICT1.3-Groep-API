@@ -8,7 +8,7 @@ namespace LU1.Controllers;
 [ApiController]
 [Authorize]
 [Route("/[controller]")]
-public class TrajectController(TrajectRepository repository) : ControllerBase
+public class TrajectController(ITrajectRepository repository) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<Traject>> GetAll()

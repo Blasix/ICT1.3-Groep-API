@@ -9,7 +9,7 @@ namespace LU1.Controllers
     [ApiController]
     [Authorize]
     [Route("/[controller]")]
-    public class ChildController(ChildRepository repository, ILogger<ChildController> logger) : ControllerBase
+    public class ChildController(IChildRepository repository, ILogger<ChildController> logger) : ControllerBase
     {
         // GET: /Child
         [HttpGet]
