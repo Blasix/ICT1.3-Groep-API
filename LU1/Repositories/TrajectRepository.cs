@@ -5,7 +5,12 @@ using Microsoft.Data.SqlClient;
 
 namespace LU1.Repositories;
 
-public class TrajectRepository(string connectionString)
+public interface ITrajectRepository
+{
+    Task<IEnumerable<Traject>> GetAll();
+}
+
+public class TrajectRepository(string connectionString) : ITrajectRepository
 {
 
     public async Task<IEnumerable<Traject>> GetAll()

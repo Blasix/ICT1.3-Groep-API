@@ -41,16 +41,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddLogging();
-builder.Services.AddScoped<LevelsRepository>(provider => new LevelsRepository(connStr));
-
 
 var sqlConnectionStringFound = !string.IsNullOrWhiteSpace(connStr);
 
-builder.Services.AddTransient<IChildRepository, ChildRepository>(provider => new ChildRepository(connStr));
-builder.Services.AddScoped<NoteRepository>(provider => new NoteRepository(connStr));
-builder.Services.AddScoped<TrajectRepository>(provider => new TrajectRepository(connStr));
-builder.Services.AddScoped<AppointmentRepository>(provider =>
-    new AppointmentRepository(connStr));
+if (sqlConnectionStringFound)
+{
+    builder.Services.AddTransient<ILevelsRepository, LevelsRepository>(provider => new LevelsRepository(connStr));
+    builder.Services.AddTransient<IChildRepository, ChildRepository>(provider => new ChildRepository(connStr));
+    builder.Services.AddTransient<INoteRepository, NoteRepository>(provider => new NoteRepository(connStr));
+    builder.Services.AddTransient<ITrajectRepository, TrajectRepository>(provider => new TrajectRepository(connStr));
+    builder.Services.AddTransient<IAppointmentRepository, AppointmentRepository>(provider => new AppointmentRepository(connStr));
+}
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

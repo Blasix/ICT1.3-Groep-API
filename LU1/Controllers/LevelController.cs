@@ -9,7 +9,7 @@ namespace LU1.Controllers
     [ApiController]
     //[Authorize]
     [Route("/[controller]")]
-    public class LevelController(LevelsRepository repository, ILogger<LevelController> logger) : ControllerBase
+    public class LevelController(ILevelsRepository repository, ILogger<LevelController> logger) : ControllerBase
     {
         // GET: /Level/{step}/{trajectId}
         [HttpGet("{step}/{trajectId}")]
